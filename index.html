@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rabindranath Tagore: A Global Life</title>
+    <title>The Life of Rabindranath Tagore</title>
     
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
     
@@ -11,137 +11,42 @@
 
     <style>
         /* Reset & Base Styles */
-        body, html {
-            margin: 0;
-            padding: 0;
-            height: 100%;
-            font-family: 'Lato', sans-serif;
-            overflow: hidden;
-            color: #333;
-        }
-
-        #map {
-            height: 100vh;
-            width: 100%;
-            z-index: 1;
-            background: #f0f0f0; /* Fallback color */
-        }
+        body, html { margin: 0; padding: 0; height: 100%; font-family: 'Lato', sans-serif; overflow: hidden; color: #333; background: #f4f4f4; }
+        #map { height: 100vh; width: 100%; z-index: 1; }
 
         /* Card Styling */
         #story-card {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            width: 380px;
-            max-width: 90%;
-            background: #ffffff;
-            padding: 30px;
-            border-radius: 4px; /* Sharper corners for a cleaner look */
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1); /* Softer shadow */
-            z-index: 1000;
-            border-left: 6px solid #a0522d; /* Sienna color */
+            position: absolute; top: 20px; left: 20px; width: 380px; max-width: 90%;
+            background: #ffffff; padding: 25px; border-radius: 8px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2); z-index: 1000;
+            border-left: 6px solid #d35400; /* Burnt Orange */
+            max-height: 90vh; overflow-y: auto;
         }
 
         /* Typography */
-        h1 {
-            font-family: 'Cormorant Garamond', serif;
-            font-size: 32px;
-            margin: 0 0 5px 0;
-            color: #1a1a1a;
-        }
+        h1 { font-family: 'Cormorant Garamond', serif; font-size: 30px; margin: 0 0 5px 0; color: #2c3e50; }
+        h2 { font-family: 'Cormorant Garamond', serif; font-size: 22px; color: #d35400; margin: 0 0 15px 0; }
+        .meta-info { font-size: 12px; text-transform: uppercase; letter-spacing: 1.5px; color: #7f8c8d; font-weight: 700; margin-bottom: 15px; display: block; border-bottom: 1px solid #eee; padding-bottom: 10px; }
+        p { font-size: 15px; line-height: 1.6; color: #34495e; margin-bottom: 20px; }
 
-        h2 {
-            font-family: 'Cormorant Garamond', serif;
-            font-size: 24px;
-            color: #a0522d;
-            margin: 0 0 10px 0;
-        }
-
-        .meta-info {
-            font-size: 13px;
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-            color: #888;
-            font-weight: 700;
-            margin-bottom: 20px;
-            display: block;
-            border-bottom: 1px solid #eee;
-            padding-bottom: 10px;
-        }
-
-        p {
-            font-size: 16px;
-            line-height: 1.7;
-            color: #4a4a4a;
-            margin-bottom: 25px;
+        /* Image Styling */
+        #event-image {
+            width: 100%; height: 220px; object-fit: cover; border-radius: 4px;
+            margin-bottom: 15px; background-color: #ecf0f1; display: block; border: 1px solid #eee;
         }
 
         /* Navigation */
-        .controls {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        button {
-            background: white;
-            color: #333;
-            border: 1px solid #ccc;
-            padding: 8px 20px;
-            border-radius: 2px;
-            cursor: pointer;
-            font-family: 'Lato', sans-serif;
-            font-size: 14px;
-            transition: all 0.2s;
-        }
-
-        button:hover {
-            background: #333;
-            color: white;
-            border-color: #333;
-        }
-
-        button:disabled {
-            opacity: 0.3;
-            cursor: default;
-        }
-
-        button:disabled:hover {
-            background: white;
-            color: #333;
-        }
-
-        .progress {
-            font-family: 'Cormorant Garamond', serif;
-            font-style: italic;
-            font-size: 18px;
-            color: #888;
-        }
-
-        /* Custom Map Marker Styling Override */
-        .leaflet-popup-content-wrapper {
-            border-radius: 2px;
-            font-family: 'Lato', sans-serif;
-        }
+        .controls { display: flex; justify-content: space-between; align-items: center; padding-top: 10px; border-top: 1px solid #eee; }
+        button { background: white; color: #2c3e50; border: 1px solid #bdc3c7; padding: 8px 15px; border-radius: 4px; cursor: pointer; font-family: 'Lato', sans-serif; font-size: 13px; transition: all 0.2s; }
+        button:hover { background: #2c3e50; color: white; border-color: #2c3e50; }
+        button:disabled { opacity: 0.5; cursor: not-allowed; background: #ecf0f1; color: #95a5a6; }
+        .progress { font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 16px; color: #7f8c8d; }
 
         /* Mobile */
         @media (max-width: 600px) {
-            #story-card {
-                top: auto;
-                bottom: 0;
-                left: 0;
-                width: 100%;
-                border-radius: 15px 15px 0 0;
-                padding: 20px 20px 30px 20px; /* Extra bottom padding for mobile safe areas */
-                box-sizing: border-box;
-                border-left: none;
-                border-top: 6px solid #a0522d;
-            }
-            #map {
-                height: 55vh;
-            }
-            h1 { font-size: 24px; }
-            p { font-size: 14px; line-height: 1.5; margin-bottom: 15px; }
+            #story-card { top: auto; bottom: 0; left: 0; width: 100%; max-height: 60vh; border-radius: 15px 15px 0 0; padding: 20px; box-sizing: border-box; border-left: none; border-top: 6px solid #d35400; }
+            #map { height: 45vh; }
+            #event-image { height: 150px; } 
         }
     </style>
 </head>
@@ -149,13 +54,16 @@
 
     <div id="story-card">
         <h1>Rabindranath Tagore</h1>
-        <span class="meta-info" id="event-meta">1861 | Kolkata</span>
-        <h2 id="event-title">Birth at Jorasanko</h2>
-        <p id="event-desc">Loading story...</p>
+        <span class="meta-info" id="event-meta">Loading...</span>
+        
+        <img id="event-image" src="" alt="Historical Event" referrerpolicy="no-referrer">
+        
+        <h2 id="event-title">Loading...</h2>
+        <p id="event-desc">Please wait, the interactive map is loading...</p>
         
         <div class="controls">
             <button id="prevBtn" onclick="navigate(-1)">Previous</button>
-            <span class="progress" id="progress-display"></span>
+            <span class="progress" id="progress-display">0 / 0</span>
             <button id="nextBtn" onclick="navigate(1)">Next</button>
         </div>
     </div>
@@ -165,173 +73,186 @@
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 
     <script>
-        // --- 1. Expanded Data Set ---
-        const lifeEvents = [
-            {
-                title: "The Beginning",
-                year: "1861",
-                location: "Kolkata, India",
-                desc: "Born at the Jorasanko Thakurbari. As the youngest of 13 children in a family of reformers and artists, he grew up in an atmosphere of cultural dynamism, despising formal classroom schooling.",
-                coords: [22.5850, 88.3591],
-                zoom: 15
-            },
-            {
-                title: "First Trip to England",
-                year: "1878",
-                location: "London, UK",
-                desc: "Sent to England to study law at University College London. Though he did not complete the degree, the exposure to Western music and literature profoundly influenced his artistic sensibilities.",
-                coords: [51.5246, -0.1340],
-                zoom: 13
-            },
-            {
-                title: "Marriage",
-                year: "1883",
-                location: "Kolkata, India",
-                desc: "Tagore married Mrinalini Devi. This period marked the beginning of his deep creative output in Bengali literature, balancing family life with his writing.",
-                coords: [22.5726, 88.3639],
-                zoom: 14
-            },
-            {
-                title: "Life on the Padma",
-                year: "1890",
-                location: "Shilaidaha (Bangladesh)",
-                desc: "Tasked with managing ancestral estates, he lived on a houseboat on the Padma River. The rural landscape and the lives of common villagers inspired his masterpiece short stories, 'Galpaguchchha'.",
-                coords: [23.9167, 89.2500],
-                zoom: 11
-            },
-            {
-                title: "Founding the Ashram",
-                year: "1901",
-                location: "Santiniketan, India",
-                desc: "He moved to Santiniketan to start an experimental school, 'Patha Bhavana'. Classes were held under trees, emphasizing a connection with nature—a direct rebellion against the British education system.",
-                coords: [23.6780, 87.6910],
-                zoom: 15
-            },
-            {
-                title: "Nobel Prize Victory",
-                year: "1913",
-                location: "Stockholm, Sweden",
-                desc: "For his collection 'Gitanjali' (Song Offerings), he was awarded the Nobel Prize in Literature, becoming the first non-European laureate and gaining instant global fame.",
-                coords: [59.3293, 18.0686],
-                zoom: 5
-            },
-            {
-                title: "Pan-Asian Vision",
-                year: "1916",
-                location: "Tokyo, Japan",
-                desc: "Tagore visited Japan. While he admired their aesthetic sense, he delivered controversial lectures warning against the rise of aggressive nationalism and materialism.",
-                coords: [35.6762, 139.6503],
-                zoom: 6
-            },
-            {
-                title: "Renouncing the Knighthood",
-                year: "1919",
-                location: "Delhi, India",
-                desc: "In protest against the Jallianwala Bagh massacre, where British troops killed hundreds of unarmed Indians, Tagore renounced his Knighthood in a stinging letter to the Viceroy.",
-                coords: [28.6139, 77.2090],
-                zoom: 10
-            },
-            {
-                title: "Vijaya & The Andes",
-                year: "1924",
-                location: "San Isidro, Argentina",
-                desc: "While ill in Argentina, he was hosted by writer Victoria Ocampo. She became his muse (he called her 'Vijaya'), inspiring a late flourish of romantic poetry.",
-                coords: [-34.4700, -58.5200],
-                zoom: 10
-            },
-            {
-                title: "Einstein & Philosophy",
-                year: "1930",
-                location: "Berlin, Germany",
-                desc: "A historic meeting between Tagore and Albert Einstein. They debated the nature of truth and reality—Einstein arguing for a reality independent of humans, Tagore for a reality defined by human perception.",
-                coords: [52.5200, 13.4050],
-                zoom: 12
-            },
-            {
-                title: "Letters from Russia",
-                year: "1930",
-                location: "Moscow, USSR",
-                desc: "He visited the Soviet Union to observe their educational efforts. While critical of the lack of freedom, he was impressed by how quickly they had spread education to the masses.",
-                coords: [55.7558, 37.6173],
-                zoom: 11
-            },
-            {
-                title: "The Artist Emerges",
-                year: "1930",
-                location: "Paris, France",
-                desc: "In his 60s, Tagore took up painting. His first exhibition was held in Paris. His art was unlike his writing—dark, rhythmic, and often strange, revealing his subconscious mind.",
-                coords: [48.8566, 2.3522],
-                zoom: 12
-            },
-            {
-                title: "The End of an Era",
-                year: "1941",
-                location: "Kolkata, India",
-                desc: "Tagore passed away at Jorasanko. He left behind a university (Visva-Bharati), two national anthems (India & Bangladesh), and a legacy of humanism that transcends borders.",
-                coords: [22.5850, 88.3591],
-                zoom: 16
-            }
-        ];
-
-        // --- 2. Map Initialization (Using CartoDB for cleaner look) ---
-        const map = L.map('map', { zoomControl: false }).setView(lifeEvents[0].coords, lifeEvents[0].zoom);
-
-        // CartoDB Positron Layer (Clean, Grayscale, Minimal)
-        L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
-            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
-            subdomains: 'abcd',
-            maxZoom: 20
-        }).addTo(map);
-
-        L.control.zoom({ position: 'topright' }).addTo(map);
-
-        let currentIndex = 0;
-        let currentMarker = null;
-
-        // --- 3. Logic ---
-        function updateUI() {
-            const event = lifeEvents[currentIndex];
-
-            // Text Updates
-            document.getElementById('event-title').innerText = event.title;
-            document.getElementById('event-meta').innerText = `${event.year} | ${event.location}`;
-            document.getElementById('event-desc').innerText = event.desc;
-            document.getElementById('progress-display').innerText = `${currentIndex + 1} / ${lifeEvents.length}`;
-
-            // Button States
-            document.getElementById('prevBtn').disabled = (currentIndex === 0);
-            document.getElementById('nextBtn').disabled = (currentIndex === lifeEvents.length - 1);
-
-            // Map Animation
-            map.flyTo(event.coords, event.zoom, {
-                animate: true,
-                duration: 2.0, // Speed of flight
-                easeLinearity: 0.25
-            });
-
-            // Marker Handling
-            if (currentMarker) {
-                map.removeLayer(currentMarker);
-            }
-
-            // Create a custom colored marker (using standard leaflet icon but with filter/hue-rotate could be done, but standard is fine for clarity)
-            currentMarker = L.marker(event.coords).addTo(map);
+        document.addEventListener("DOMContentLoaded", function() {
             
-            // Popup
-            currentMarker.bindPopup(`<b>${event.title}</b><br>${event.year}`).openPopup();
-        }
+            const lifeEvents = [
+                {
+                    title: "The Beginning",
+                    year: "1861",
+                    location: "Kolkata, India",
+                    desc: "Born at the Jorasanko Thakurbari. As the youngest of 13 children in a family of reformers and artists, he grew up in an atmosphere of cultural dynamism.",
+                    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ee/Jorasanko_Thakurbari_01.jpg/640px-Jorasanko_Thakurbari_01.jpg",
+                    coords: [22.5850, 88.3591],
+                    zoom: 16
+                },
+                {
+                    title: "First Trip to England",
+                    year: "1878",
+                    location: "London, UK",
+                    desc: "Sent to England to study law at UCL. Though he didn't complete the degree, the exposure to Western music and literature influenced his sensibilities.",
+                    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/04/Rabindranath_Tagore_in_Hampstead%2C_London%2C_1912.jpg/478px-Rabindranath_Tagore_in_Hampstead%2C_London%2C_1912.jpg",
+                    coords: [51.5246, -0.1340],
+                    zoom: 13
+                },
+                {
+                    title: "Marriage",
+                    year: "1883",
+                    location: "Kolkata, India",
+                    desc: "Tagore married Mrinalini Devi. This period marked the beginning of his deep creative output in Bengali literature, balancing family life with his writing.",
+                    image: "https://upload.wikimedia.org/wikipedia/commons/4/45/Rabindranath_and_Mrinalini.jpg",
+                    coords: [22.5726, 88.3639],
+                    zoom: 14
+                },
+                {
+                    title: "Life on the Padma",
+                    year: "1890",
+                    location: "Shilaidaha (Bangladesh)",
+                    desc: "Managing estates while living on a houseboat (Bajra) on the Padma River. The rural landscape inspired his masterpiece short stories, 'Galpaguchchha'.",
+                    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/ba/Rabindranath_Tagore_in_Kolkata_c_1890.jpg/464px-Rabindranath_Tagore_in_Kolkata_c_1890.jpg",
+                    coords: [23.9167, 89.2500],
+                    zoom: 11
+                },
+                {
+                    title: "Founding the Ashram",
+                    year: "1901",
+                    location: "Santiniketan, India",
+                    desc: "He founded an experimental school, 'Patha Bhavana'. Classes were held under trees, emphasizing a connection with nature—a rebellion against British schooling.",
+                    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6d/Open_air_class_at_Shantiniketan.jpg/640px-Open_air_class_at_Shantiniketan.jpg",
+                    coords: [23.6780, 87.6910],
+                    zoom: 15
+                },
+                {
+                    title: "Nobel Prize Victory",
+                    year: "1913",
+                    location: "Stockholm, Sweden",
+                    desc: "For 'Gitanjali', he was awarded the Nobel Prize in Literature, becoming the first non-European laureate and gaining instant global fame.",
+                    image: "https://upload.wikimedia.org/wikipedia/commons/0/01/Tagore_nobel.jpg",
+                    coords: [59.3293, 18.0686],
+                    zoom: 5
+                },
+                {
+                    title: "Pan-Asian Vision",
+                    year: "1916",
+                    location: "Tokyo, Japan",
+                    desc: "Tagore visited Japan. While he admired their aesthetic sense, he delivered controversial lectures warning against the rise of aggressive nationalism.",
+                    image: "https://upload.wikimedia.org/wikipedia/commons/8/82/Tagore_in_Tokyo_1916.jpg",
+                    coords: [35.6762, 139.6503],
+                    zoom: 6
+                },
+                {
+                    title: "Renouncing the Knighthood",
+                    year: "1919",
+                    location: "Delhi, India",
+                    desc: "In protest against the Jallianwala Bagh massacre by British troops, Tagore renounced his Knighthood in a stinging letter to the Viceroy.",
+                    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/82/Rabindranath_Tagore_unknown_year.jpg/490px-Rabindranath_Tagore_unknown_year.jpg",
+                    coords: [28.6139, 77.2090],
+                    zoom: 10
+                },
+                {
+                    title: "Vijaya & The Andes",
+                    year: "1924",
+                    location: "San Isidro, Argentina",
+                    desc: "While ill in Argentina, he was hosted by Victoria Ocampo. She became his muse 'Vijaya', inspiring a late flourish of romantic poetry.",
+                    image: "https://upload.wikimedia.org/wikipedia/commons/1/11/Tagore_ocampo.jpg",
+                    coords: [-34.4700, -58.5200],
+                    zoom: 10
+                },
+                {
+                    title: "Einstein & Philosophy",
+                    year: "1930",
+                    location: "Berlin, Germany",
+                    desc: "A historic meeting with Albert Einstein. They debated the nature of reality—Einstein arguing for an objective reality, Tagore for one defined by human perception.",
+                    image: "https://upload.wikimedia.org/wikipedia/commons/3/37/Einstein_and_Tagore_Berlin_14_July_1930.jpg",
+                    coords: [52.5200, 13.4050],
+                    zoom: 12
+                },
+                {
+                    title: "Letters from Russia",
+                    year: "1930",
+                    location: "Moscow, USSR",
+                    desc: "He visited the Soviet Union to observe their educational efforts. While critical of the lack of freedom, he was impressed by how quickly they had spread education to the masses.",
+                    image: "https://upload.wikimedia.org/wikipedia/commons/8/86/Rabindranath_Tagore_in_Moscow%2C_1930.jpg",
+                    coords: [55.7558, 37.6173],
+                    zoom: 11
+                },
+                {
+                    title: "The Artist Emerges",
+                    year: "1930",
+                    location: "Paris, France",
+                    desc: "In his 60s, Tagore took up painting. His art was dark, rhythmic, and often strange, revealing his subconscious mind. His first exhibition was in Paris.",
+                    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4c/Rabindranath_Tagore_-_Dancing_Woman_-_Google_Art_Project.jpg/463px-Rabindranath_Tagore_-_Dancing_Woman_-_Google_Art_Project.jpg",
+                    coords: [48.8566, 2.3522],
+                    zoom: 12
+                },
+                {
+                    title: "The End of an Era",
+                    year: "1941",
+                    location: "Kolkata, India",
+                    desc: "Tagore passed away at Jorasanko. He left behind Visva-Bharati university, two national anthems, and a colossal cultural legacy.",
+                    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a0/Rabindranath_Tagore_last_days.jpg/610px-Rabindranath_Tagore_last_days.jpg",
+                    coords: [22.5850, 88.3591],
+                    zoom: 16
+                }
+            ];
 
-        function navigate(direction) {
-            const newIndex = currentIndex + direction;
-            if (newIndex >= 0 && newIndex < lifeEvents.length) {
-                currentIndex = newIndex;
-                updateUI();
+            // --- Initialize Map (Using OpenStreetMap for best reliability) ---
+            const map = L.map('map', { zoomControl: false }).setView(lifeEvents[0].coords, lifeEvents[0].zoom);
+
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; OpenStreetMap contributors',
+                maxZoom: 19
+            }).addTo(map);
+
+            L.control.zoom({ position: 'topright' }).addTo(map);
+
+            let currentIndex = 0;
+            let currentMarker = null;
+
+            // --- Logic ---
+            window.navigate = function(direction) {
+                const newIndex = currentIndex + direction;
+                if (newIndex >= 0 && newIndex < lifeEvents.length) {
+                    currentIndex = newIndex;
+                    updateUI();
+                }
+            };
+
+            function updateUI() {
+                const event = lifeEvents[currentIndex];
+
+                // Update Image
+                const imgElement = document.getElementById('event-image');
+                imgElement.src = event.image;
+                imgElement.alt = event.title;
+
+                // Update Text
+                document.getElementById('event-title').innerText = event.title;
+                document.getElementById('event-meta').innerText = `${event.year} | ${event.location}`;
+                document.getElementById('event-desc').innerText = event.desc;
+                document.getElementById('progress-display').innerText = `${currentIndex + 1} / ${lifeEvents.length}`;
+
+                // Button States
+                document.getElementById('prevBtn').disabled = (currentIndex === 0);
+                document.getElementById('nextBtn').disabled = (currentIndex === lifeEvents.length - 1);
+
+                // Map Animation
+                map.flyTo(event.coords, event.zoom, {
+                    animate: true,
+                    duration: 2.0
+                });
+
+                // Marker Handling
+                if (currentMarker) {
+                    map.removeLayer(currentMarker);
+                }
+
+                currentMarker = L.marker(event.coords).addTo(map);
+                currentMarker.bindPopup(`<b>${event.title}</b><br>${event.year}`).openPopup();
             }
-        }
 
-        // Initialize
-        updateUI();
-
+            // Initialize View
+            updateUI();
+        });
     </script>
 </body>
 </html>
