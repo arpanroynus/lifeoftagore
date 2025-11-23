@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Life of Rabindranath Tagore</title>
+    <title>Rabindranath Tagore: A Global Life</title>
     
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
     
@@ -56,7 +56,7 @@
         <h1>Rabindranath Tagore</h1>
         <span class="meta-info" id="event-meta">Loading...</span>
         
-        <img id="event-image" src="" alt="Historical Event" referrerpolicy="no-referrer">
+        <img id="event-image" src="" alt="Historical Event">
         
         <h2 id="event-title">Loading...</h2>
         <p id="event-desc">Please wait, the interactive map is loading...</p>
@@ -75,13 +75,17 @@
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             
+            // --- THE FIX: Image Proxy ---
+            // This wraps the URL in a proxy service to bypass Wikimedia blocking
+            const getProxyImg = (url) => `https://wsrv.nl/?url=${encodeURIComponent(url)}&w=600`;
+
             const lifeEvents = [
                 {
                     title: "The Beginning",
                     year: "1861",
                     location: "Kolkata, India",
                     desc: "Born at the Jorasanko Thakurbari. As the youngest of 13 children in a family of reformers and artists, he grew up in an atmosphere of cultural dynamism.",
-                    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ee/Jorasanko_Thakurbari_01.jpg/640px-Jorasanko_Thakurbari_01.jpg",
+                    image: "https://upload.wikimedia.org/wikipedia/commons/e/ee/Jorasanko_Thakurbari_01.jpg",
                     coords: [22.5850, 88.3591],
                     zoom: 16
                 },
@@ -90,7 +94,7 @@
                     year: "1878",
                     location: "London, UK",
                     desc: "Sent to England to study law at UCL. Though he didn't complete the degree, the exposure to Western music and literature influenced his sensibilities.",
-                    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/04/Rabindranath_Tagore_in_Hampstead%2C_London%2C_1912.jpg/478px-Rabindranath_Tagore_in_Hampstead%2C_London%2C_1912.jpg",
+                    image: "https://upload.wikimedia.org/wikipedia/commons/0/04/Rabindranath_Tagore_in_Hampstead%2C_London%2C_1912.jpg",
                     coords: [51.5246, -0.1340],
                     zoom: 13
                 },
@@ -108,7 +112,7 @@
                     year: "1890",
                     location: "Shilaidaha (Bangladesh)",
                     desc: "Managing estates while living on a houseboat (Bajra) on the Padma River. The rural landscape inspired his masterpiece short stories, 'Galpaguchchha'.",
-                    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/ba/Rabindranath_Tagore_in_Kolkata_c_1890.jpg/464px-Rabindranath_Tagore_in_Kolkata_c_1890.jpg",
+                    image: "https://upload.wikimedia.org/wikipedia/commons/b/ba/Rabindranath_Tagore_in_Kolkata_c_1890.jpg",
                     coords: [23.9167, 89.2500],
                     zoom: 11
                 },
@@ -117,7 +121,7 @@
                     year: "1901",
                     location: "Santiniketan, India",
                     desc: "He founded an experimental school, 'Patha Bhavana'. Classes were held under trees, emphasizing a connection with nature—a rebellion against British schooling.",
-                    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6d/Open_air_class_at_Shantiniketan.jpg/640px-Open_air_class_at_Shantiniketan.jpg",
+                    image: "https://upload.wikimedia.org/wikipedia/commons/6/6d/Open_air_class_at_Shantiniketan.jpg",
                     coords: [23.6780, 87.6910],
                     zoom: 15
                 },
@@ -144,7 +148,7 @@
                     year: "1919",
                     location: "Delhi, India",
                     desc: "In protest against the Jallianwala Bagh massacre by British troops, Tagore renounced his Knighthood in a stinging letter to the Viceroy.",
-                    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/82/Rabindranath_Tagore_unknown_year.jpg/490px-Rabindranath_Tagore_unknown_year.jpg",
+                    image: "https://upload.wikimedia.org/wikipedia/commons/8/82/Rabindranath_Tagore_unknown_year.jpg",
                     coords: [28.6139, 77.2090],
                     zoom: 10
                 },
@@ -180,7 +184,7 @@
                     year: "1930",
                     location: "Paris, France",
                     desc: "In his 60s, Tagore took up painting. His art was dark, rhythmic, and often strange, revealing his subconscious mind. His first exhibition was in Paris.",
-                    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4c/Rabindranath_Tagore_-_Dancing_Woman_-_Google_Art_Project.jpg/463px-Rabindranath_Tagore_-_Dancing_Woman_-_Google_Art_Project.jpg",
+                    image: "https://upload.wikimedia.org/wikipedia/commons/4/4c/Rabindranath_Tagore_-_Dancing_Woman_-_Google_Art_Project.jpg",
                     coords: [48.8566, 2.3522],
                     zoom: 12
                 },
@@ -189,13 +193,13 @@
                     year: "1941",
                     location: "Kolkata, India",
                     desc: "Tagore passed away at Jorasanko. He left behind Visva-Bharati university, two national anthems, and a colossal cultural legacy.",
-                    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a0/Rabindranath_Tagore_last_days.jpg/610px-Rabindranath_Tagore_last_days.jpg",
+                    image: "https://upload.wikimedia.org/wikipedia/commons/a/a0/Rabindranath_Tagore_last_days.jpg",
                     coords: [22.5850, 88.3591],
                     zoom: 16
                 }
             ];
 
-            // --- Initialize Map (Using OpenStreetMap for best reliability) ---
+            // --- Initialize Map ---
             const map = L.map('map', { zoomControl: false }).setView(lifeEvents[0].coords, lifeEvents[0].zoom);
 
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -220,9 +224,10 @@
             function updateUI() {
                 const event = lifeEvents[currentIndex];
 
-                // Update Image
+                // Update Image using Proxy function
                 const imgElement = document.getElementById('event-image');
-                imgElement.src = event.image;
+                // This line ensures the URL is passed through wsrv.nl
+                imgElement.src = getProxyImg(event.image); 
                 imgElement.alt = event.title;
 
                 // Update Text
