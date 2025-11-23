@@ -56,7 +56,7 @@
         <h1>Rabindranath Tagore</h1>
         <span class="meta-info" id="event-meta">Loading...</span>
         
-        <img id="event-image" src="" alt="Historical Event">
+        <img id="event-image" src="" alt="Historical Event" referrerpolicy="no-referrer">
         
         <h2 id="event-title">Loading...</h2>
         <p id="event-desc">Please wait, the interactive map is loading...</p>
@@ -75,9 +75,11 @@
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             
-            // --- THE FIX: Image Proxy ---
-            // This wraps the URL in a proxy service to bypass Wikimedia blocking
-            const getProxyImg = (url) => `https://wsrv.nl/?url=${encodeURIComponent(url)}&w=600`;
+            // --- SAFE PROXY FUNCTION (No Backticks) ---
+            function getProxyImg(url) {
+                // We use string concatenation to avoid syntax errors with copy-pasting
+                return "https://wsrv.nl/?url=" + encodeURIComponent(url) + "&w=600";
+            }
 
             const lifeEvents = [
                 {
@@ -226,15 +228,18 @@
 
                 // Update Image using Proxy function
                 const imgElement = document.getElementById('event-image');
-                // This line ensures the URL is passed through wsrv.nl
-                imgElement.src = getProxyImg(event.image); 
-                imgElement.alt = event.title;
+                
+                // Safety Check: If image is missing, show a placeholder color
+                if (event.image) {
+                     imgElement.src = getProxyImg(event.image); 
+                     imgElement.alt = event.title;
+                }
 
                 // Update Text
                 document.getElementById('event-title').innerText = event.title;
-                document.getElementById('event-meta').innerText = `${event.year} | ${event.location}`;
+                document.getElementById('event-meta').innerText = event.year + " | " + event.location;
                 document.getElementById('event-desc').innerText = event.desc;
-                document.getElementById('progress-display').innerText = `${currentIndex + 1} / ${lifeEvents.length}`;
+                document.getElementById('progress-display').innerText = (currentIndex + 1) + " / " + lifeEvents.length;
 
                 // Button States
                 document.getElementById('prevBtn').disabled = (currentIndex === 0);
@@ -252,7 +257,7 @@
                 }
 
                 currentMarker = L.marker(event.coords).addTo(map);
-                currentMarker.bindPopup(`<b>${event.title}</b><br>${event.year}`).openPopup();
+                currentMarker.bindPopup("<b>" + event.title + "</b><br>" + event.year).openPopup();
             }
 
             // Initialize View
